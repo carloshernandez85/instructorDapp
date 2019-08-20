@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <h2>Instructor Form</h2>
+  <form>
+    <div class="form-group">
+      <label>Name:</label>
+      <input type="text" class="form-control" id="name" placeholder="Enter name" name="name">
+    </div>
+    <div class="form-group">
+      <label>Age:</label>
+      <input type="text" class="form-control" id="age" placeholder="Enter Age" name="age">
+    </div>
+    <button type="button" id="submit" class="btn btn-default">Submit</button>
+  </form>
+</div>
+
+<div class="container">
+    <h2>Instructor Details</h2>
+    <p id="details"></p>
+</div>
+
+
+<!----BELOW IS WEB3 INTEGRATION-->
+
+<script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.36/dist/web3.min.js"></script>
+
+<script type="text/javascript">
+    
+    if (typeof web3 !== 'undefined') {
+        web3 = new Web3(web3.currentProvider);
+    } else {
+        // set the provider you want from Web3.providers
+        web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
+    }
+
+    const abi = ([{"constant":false,"inputs":[{"name":"_name","type":"string"},{"name":"_age","type":"uint256"}],"name":"setInstructor","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"creator","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getInstructor","outputs":[{"name":"","type":"string"},{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}]);
+    const address = "0xc69d3e5ac2cc25357c2c7c5f46abdec0c303fd9c";
+
+    const contract = new web3.eth.Contract(abi, address);
+    
+    
+    
+    $("#submit").click(function() {
+        contract.methods.setInstructor($("#name").val(), $("#age").val()).call({from: web3.eth.accounts[0], gas:3000000});
+    });
+                
+
+    contract.methods.getInstructor().call(function(error, obj) {
+        console.log(error);
+        console.log(obj);
+    });
+ 
+</script>
+</body>
+</html>
